@@ -8,6 +8,7 @@ trait OrganisationService {
   def credit(org: Organisation, amount: BigDecimal): Unit
   def debit(org: Organisation, amount: BigDecimal): Unit
   def disable(org: Organisation): Unit
+  def recover(org: Organisation): Unit
 
   def expedite(amount: BigDecimal)(id: String): Organisation = {
     val org = define(id)
@@ -29,4 +30,6 @@ object OrganisationService extends OrganisationService {
     org.debit(amount)
 
   override def disable(org: Organisation): Unit = org.disable()
+
+  override def recover(org: Organisation): Unit = org.recover()
 }
