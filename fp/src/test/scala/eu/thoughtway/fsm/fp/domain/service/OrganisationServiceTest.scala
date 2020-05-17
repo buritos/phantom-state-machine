@@ -39,15 +39,15 @@ class OrganisationServiceTest
       }
 
       it("should not allow credit") {
-        "credit(10)(defined)" shouldNot compile
+        "credit(defined)(10)" shouldNot typeCheck
       }
 
       it("should not allow debit") {
-        "debit(10)(defined)" shouldNot compile
+        "debit(defined)(10)" shouldNot typeCheck
       }
 
       it("should not allow disable") {
-        "disable(defined)" shouldNot compile
+        "disable(defined)" shouldNot typeCheck
       }
 
       describe("When a defined Organisation is approved") {
@@ -70,13 +70,13 @@ class OrganisationServiceTest
         }
 
         it("should not allow approve") {
-          "approve(approved)" shouldNot compile
+          "approve(approved)" shouldNot typeCheck
         }
 
         describe(
           "When an approved Organisation is credited with a given amount"
         ) {
-          val credited = credit(10)(approved)
+          val credited = credit(approved)(10)
 
           it("should have its id remain unchanged") {
             credited.id should be(approved.id)
@@ -96,7 +96,7 @@ class OrganisationServiceTest
         }
 
         describe("When an approved Organisation is debited") {
-          val debited = debit(10)(approved)
+          val debited = debit(approved)(10)
 
           it("should have its id remain unchanged") {
             debited.id should be(approved.id)
@@ -135,19 +135,19 @@ class OrganisationServiceTest
           }
 
           it("should not allow approve") {
-            "approve(disabled)" shouldNot compile
+            "approve(disabled)" shouldNot typeCheck
           }
 
           it("should not allow credit") {
-            "credit(10)(disabled)" shouldNot compile
+            "credit(disabled)(10)" shouldNot typeCheck
           }
 
           it("should not allow debit") {
-            "debit(10)(disabled)" shouldNot compile
+            "debit(disabled)(10)" shouldNot typeCheck
           }
 
           it("should not allow disable") {
-            "disable(disabled)" shouldNot compile
+            "disable(disabled)" shouldNot typeCheck
           }
         }
       }
@@ -156,7 +156,7 @@ class OrganisationServiceTest
     describe(
       "When expediting the definition of an Organisation given an amount and the id"
     ) {
-      val expedited = expedite(10)("test")
+      val expedited = expedite("test")(10)
 
       it("should have its id set to the given id") {
         expedited.id should be("test")

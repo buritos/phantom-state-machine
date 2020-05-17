@@ -1,7 +1,7 @@
 
 ThisBuild / organization := "eu.thoughtway"
 ThisBuild / startYear := Some(2020)
-ThisBuild / description := "A journey from procedural to Object-Oriented, to functional implementations of Finite State Machines"
+ThisBuild / description := "A journey from Procedural to Object-Oriented, to Functional Type-level implementations for managing state"
 ThisBuild / licenses += "GPLv3" -> url("https://www.gnu.org/licenses/gpl-3.0.html")
 
 ThisBuild / version := "0.1"
@@ -67,6 +67,3 @@ lazy val oo = project
 
 lazy val fp = project
   .settings(name := "phantom-state-machine-fp")
-  .settings(libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats-core" % "2.0.0"
-  ))
