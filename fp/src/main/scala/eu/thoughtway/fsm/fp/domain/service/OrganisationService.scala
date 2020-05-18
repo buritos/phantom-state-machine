@@ -10,10 +10,13 @@ trait OrganisationService {
   def credit(org: OrganisationEnabled)(
       amount: BigDecimal
   ): OrganisationEnabled
-  def debit(org: OrganisationEnabled)(
+  def debit(org: Organisation[EnabledOrSuspended])(
       amount: BigDecimal
-  ): OrganisationEnabled
+  ): Organisation[EnabledOrSuspended]
   def disable(org: OrganisationEnabled): OrganisationDisabled
+
+  def suspend(org: Organisation[EnabledOrDisabled]): OrganisationSuspended
+  def resume(org: OrganisationSuspended): OrganisationEnabled
 
   def expedite(id: String)(amount: BigDecimal): OrganisationEnabled =
     (define _ andThen approve _ andThen credit)(id)(amount)
@@ -31,10 +34,18 @@ trait OrganisationServiceImpl extends OrganisationService {
   ): OrganisationEnabled =
     org.copy(balance = org.balance + amount)
 
-  override def debit(org: OrganisationEnabled)(
+  override def debit(org: Organisation[EnabledOrSuspended])(
       amount: BigDecimal
-  ): OrganisationEnabled =
+  ): Organisation[EnabledOrSuspended] =
     org.copy(balance = org.balance - amount)
+
+  override def suspend(
+      org: Organisation[EnabledOrDisabled]
+  ): OrganisationSuspended =
+    org.copy(status = Suspended)
+
+  override def resume(org: OrganisationSuspended): OrganisationEnabled =
+    org.copy(status = Enabled)
 
   override def disable(org: OrganisationEnabled): OrganisationDisabled =
     org.copy(status = Disabled)
