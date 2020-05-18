@@ -89,6 +89,8 @@ Here is the updated diagram with the new behaviour added.
 
 ![V2 solution diagram](https://raw.githubusercontent.com/buritos/phantom-state-machine/master/doc/v2.png)
 
+[solution diff](https://github.com/buritos/phantom-state-machine/pull/2/files)
+
 #### V3
 
 Next, we will look into a change request that affects the number of valid states that an 
@@ -103,6 +105,10 @@ so that they can continue processing further `credit` requests for that `Organis
 Following is the updated state diagram with the new state and associated behaviours added.
 
 ![V3 solution diagram](https://raw.githubusercontent.com/buritos/phantom-state-machine/master/doc/v3.png)
+
+[solution diff with Scala 3 union types](https://github.com/buritos/phantom-state-machine/pull/3/files)
+
+[solution diff with subtyping](https://github.com/buritos/phantom-state-machine/pull/4/files)
 
 ## Feedback
 

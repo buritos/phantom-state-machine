@@ -29,10 +29,11 @@ Compile time safety at the `Service` boundaries push runtime checks upstream.
 
 ## Limitations
 
-- Non-binary transitions are cumbersome to represent. 
+- Non-binary transitions are cumbersome to represent in languages without support for union types. 
 
-Currently, best bet for Scala 2 programs is subtyping which can get unwindly pretty fast (see <link to PR>). 
-In Scala 3, Union types are a more suitable language feature for representing such transitions (see <link to PR>).  
+Currently, best bet for Scala 2 programs is subtyping which can get unwindly pretty fast ([see Scala 2 solution](https://github.com/buritos/phantom-state-machine/pull/4/files)).
+ 
+In Scala 3, Union types are a more suitable language feature for representing such transitions ([see Scala 3 solution](https://github.com/buritos/phantom-state-machine/pull/3/files)).  
 
 ---
 ## LICENSE
