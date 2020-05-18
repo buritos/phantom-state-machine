@@ -33,6 +33,8 @@ class Organisation(private[this] val _id: String)
 
   override def disable(): Unit = _state.disable()
 
+  override def recover(): Unit = _state.recover()
+
   sealed trait State extends Organisation.Organisation
 
   final class Defined() extends State {
@@ -52,6 +54,11 @@ class Organisation(private[this] val _id: String)
       throw new IllegalStateException(
         "Can't disable Organisation in Defined state"
       )
+
+    override def recover(): Unit =
+      throw new IllegalStateException(
+        "Can't recover Organisation in Defined state"
+      )
   }
 
   final class Enabled() extends State {
@@ -67,6 +74,11 @@ class Organisation(private[this] val _id: String)
       _balance = balance - amount
 
     override def disable(): Unit = _state = _disabled
+
+    override def recover(): Unit =
+      throw new IllegalStateException(
+        "Can't recover Organisation in Enabled state"
+      )
   }
 
   final class Disabled() extends State {
@@ -89,6 +101,8 @@ class Organisation(private[this] val _id: String)
       throw new IllegalStateException(
         "Can't disable Organisation in Disabled state"
       )
+
+    override def recover(): Unit = _state = _enabled
   }
 }
 
@@ -98,5 +112,6 @@ object Organisation {
     def credit(amount: BigDecimal): Unit
     def debit(amount: BigDecimal): Unit
     def disable(): Unit
+    def recover(): Unit
   }
 }

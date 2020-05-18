@@ -14,6 +14,7 @@ trait OrganisationService {
       amount: BigDecimal
   ): OrganisationEnabled
   def disable(org: OrganisationEnabled): OrganisationDisabled
+  def recover(org: OrganisationDisabled): OrganisationEnabled
 
   def expedite(id: String)(amount: BigDecimal): OrganisationEnabled =
     (define _ andThen approve _ andThen credit)(id)(amount)
@@ -38,4 +39,7 @@ trait OrganisationServiceImpl extends OrganisationService {
 
   override def disable(org: OrganisationEnabled): OrganisationDisabled =
     org.copy(status = Disabled)
+
+  override def recover(org: OrganisationDisabled): OrganisationEnabled =
+    org.copy(status = Enabled)
 }
