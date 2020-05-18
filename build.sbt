@@ -51,7 +51,7 @@ ThisBuild / scalacOptions ++= Seq(
 ThisBuild / resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/"
 
 ThisBuild / libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test
+  "org.scalatest" %% "scalatest" % "3.1.1" % Test
 )
 
 lazy val fsm = project.in(file("."))
@@ -67,3 +67,9 @@ lazy val oo = project
 
 lazy val fp = project
   .settings(name := "phantom-state-machine-fp")
+  .settings(scalaVersion := "0.22.0-RC1")
+  .settings(scalacOptions in ThisBuild := Seq(
+    "-deprecation",
+    "-feature",
+    "-unchecked")
+  )

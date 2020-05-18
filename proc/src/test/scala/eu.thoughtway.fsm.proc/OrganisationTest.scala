@@ -2,12 +2,10 @@ package eu.thoughtway.fsm.proc
 
 import java.time.LocalDateTime
 
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class OrganisationTest
-    extends FunSpec
-    with Matchers
-    with ParallelTestExecution {
+class OrganisationTest extends AnyFunSpec with Matchers {
 
   describe("Given an Organisation") {
 
@@ -43,6 +41,14 @@ class OrganisationTest
       it("should throw IllegalStateException on disable") {
         an[IllegalStateException] shouldBe thrownBy(disable(org))
       }
+
+      it("should throw IllegalStateException on suspend") {
+        an[IllegalStateException] shouldBe thrownBy(suspend(org))
+      }
+
+      it("should throw IllegalStateException on resume") {
+        an[IllegalStateException] shouldBe thrownBy(resume(org))
+      }
     }
 
     describe("When a defined Organisation is approved") {
@@ -72,6 +78,10 @@ class OrganisationTest
 
       it("should throw IllegalStateException on approve") {
         an[IllegalStateException] shouldBe thrownBy(approve(org))
+      }
+
+      it("should throw IllegalStateException on resume") {
+        an[IllegalStateException] shouldBe thrownBy(resume(org))
       }
     }
 
@@ -133,6 +143,114 @@ class OrganisationTest
       }
     }
 
+    describe("When an approved Organisation is suspended") {
+
+      val org = define("test")
+
+      val createdOriginal = org.created
+      val balanceOriginal = org.balance
+
+      approve(org)
+      suspend(org)
+
+      it("should have its id remain unchanged") {
+        org.id should be("test")
+      }
+
+      it("should have its created date remain unchanged") {
+        org.created should be(createdOriginal)
+      }
+
+      it("should have its state set to the Suspended state") {
+        org.state should be(Suspended)
+      }
+
+      it("should have its balance remain unchanged") {
+        org.balance should be(balanceOriginal)
+      }
+
+      it("should throw IllegalStateException on approve") {
+        an[IllegalStateException] shouldBe thrownBy(approve(org))
+      }
+
+      it("should throw IllegalStateException on credit") {
+        an[IllegalStateException] shouldBe thrownBy(credit(org, 10))
+      }
+
+      it("should throw IllegalStateException on suspend") {
+        an[IllegalStateException] shouldBe thrownBy(suspend(org))
+      }
+    }
+
+    describe("When an suspended Organisation is debited") {
+
+      val org = define("test")
+
+      val createdOriginal = org.created
+      val balanceOriginal = org.balance
+
+      approve(org)
+      suspend(org)
+      debit(org, 10)
+
+      it("should have its id remain unchanged") {
+        org.id should be("test")
+      }
+
+      it("should have its created date remain unchanged") {
+        org.created should be(createdOriginal)
+      }
+
+      it("should have its state remain unchanged") {
+        org.state should be(Suspended)
+      }
+
+      it("should have its balance decremented by the amount debited") {
+        org.balance should be(balanceOriginal - 10)
+      }
+    }
+
+    describe("When an suspended Organisation is resumed") {
+
+      val org = define("test")
+
+      val createdOriginal = org.created
+      val balanceOriginal = org.balance
+
+      approve(org)
+      suspend(org)
+      resume(org)
+
+      it("should have its id remain unchanged") {
+        org.id should be("test")
+      }
+
+      it("should have its created date remain unchanged") {
+        org.created should be(createdOriginal)
+      }
+
+      it("should have its state set to the Enabled state") {
+        org.state should be(Enabled)
+      }
+
+      it("should have its balance remain unchanged") {
+        org.balance should be(balanceOriginal)
+      }
+    }
+
+    describe("When a suspended Organisation is disabled") {
+
+      val org = define("test")
+
+      approve(org)
+      suspend(org)
+      disable(org)
+
+      it("should have its state set to the Disabled state") {
+        org.state should be(Disabled)
+      }
+    }
+
     describe("When an approved Organisation is disabled") {
 
       val org = define("test")
@@ -174,6 +292,10 @@ class OrganisationTest
 
       it("should throw IllegalStateException on disable") {
         an[IllegalStateException] shouldBe thrownBy(disable(org))
+      }
+
+      it("should throw IllegalStateException on resume") {
+        an[IllegalStateException] shouldBe thrownBy(resume(org))
       }
     }
 

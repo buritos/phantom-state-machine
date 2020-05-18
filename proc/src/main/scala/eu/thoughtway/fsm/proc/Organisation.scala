@@ -16,6 +16,7 @@ object Organisation {
   sealed trait State
   case object Defined extends State
   case object Enabled extends State
+  case object Suspended extends State
   case object Disabled extends State
 
   def define(id: String): Organisation =
@@ -40,7 +41,7 @@ object Organisation {
     }
 
   def debit(org: Organisation, amount: BigDecimal): Unit =
-    if (org.state.equals(Enabled)) {
+    if (org.state.equals(Enabled) || org.state.equals(Suspended)) {
       org.balance = org.balance - amount
     } else {
       throw new IllegalStateException(
@@ -49,11 +50,29 @@ object Organisation {
     }
 
   def disable(org: Organisation): Unit =
-    if (org.state.equals(Enabled)) {
+    if (org.state.equals(Enabled) || org.state.equals(Suspended)) {
       org.state = Disabled
     } else {
       throw new IllegalStateException(
         s"Can't debit Organisation(${org.id}, ${org.state})"
+      )
+    }
+
+  def suspend(org: Organisation): Unit =
+    if (org.state.equals(Enabled) || org.state.equals(Disabled)) {
+      org.state = Suspended
+    } else {
+      throw new IllegalStateException(
+        s"Can't suspend Organisation(${org.id}, ${org.state})"
+      )
+    }
+
+  def resume(org: Organisation): Unit =
+    if (org.state.equals(Suspended)) {
+      org.state = Enabled
+    } else {
+      throw new IllegalStateException(
+        s"Can't resume Organisation(${org.id}, ${org.state})"
       )
     }
 
