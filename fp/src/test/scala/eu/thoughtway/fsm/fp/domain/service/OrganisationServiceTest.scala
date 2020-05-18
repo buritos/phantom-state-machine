@@ -50,6 +50,10 @@ class OrganisationServiceTest
         "disable(defined)" shouldNot typeCheck
       }
 
+      it("should not allow recover") {
+        "recover(defined)" shouldNot typeCheck
+      }
+
       describe("When a defined Organisation is approved") {
         val approved = approve(defined)
 
@@ -71,6 +75,10 @@ class OrganisationServiceTest
 
         it("should not allow approve") {
           "approve(approved)" shouldNot typeCheck
+        }
+
+        it("should not allow recover") {
+          "recover(defined)" shouldNot typeCheck
         }
 
         describe(
@@ -148,6 +156,26 @@ class OrganisationServiceTest
 
           it("should not allow disable") {
             "disable(disabled)" shouldNot typeCheck
+          }
+
+          describe("When a disabled Organisation is recovered") {
+            val recovered = recover(disabled)
+
+            it("should have its id remain unchanged") {
+              recovered.id should be(approved.id)
+            }
+
+            it("should have its created date remain unchanged") {
+              recovered.created should be(approved.created)
+            }
+
+            it("should have its status set to the Enabled Status") {
+              recovered.status should be(Enabled)
+            }
+
+            it("should have its balance remain unchanged") {
+              recovered.balance should be(approved.balance)
+            }
           }
         }
       }

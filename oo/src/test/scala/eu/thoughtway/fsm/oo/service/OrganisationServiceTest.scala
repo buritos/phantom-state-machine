@@ -43,6 +43,10 @@ class OrganisationServiceTest
       it("should throw IllegalStateException on disable") {
         an[IllegalStateException] shouldBe thrownBy(disable(org))
       }
+
+      it("should throw IllegalStateException on recover") {
+        an[IllegalStateException] shouldBe thrownBy(recover(org))
+      }
     }
 
     describe("When a defined Organisation is approved") {
@@ -72,6 +76,10 @@ class OrganisationServiceTest
 
       it("should throw IllegalStateException on approve") {
         an[IllegalStateException] shouldBe thrownBy(approve(org))
+      }
+
+      it("should throw IllegalStateException on recover") {
+        an[IllegalStateException] shouldBe thrownBy(recover(org))
       }
     }
 
@@ -174,6 +182,34 @@ class OrganisationServiceTest
 
       it("should throw IllegalStateException on disable") {
         an[IllegalStateException] shouldBe thrownBy(disable(org))
+      }
+    }
+
+    describe("When a disabled Organisation is recovered") {
+
+      val org = define("test")
+
+      val createdOriginal = org.created
+      val balanceOriginal = org.balance
+
+      approve(org)
+      disable(org)
+      recover(org)
+
+      it("should have its id remain unchanged") {
+        org.id should be("test")
+      }
+
+      it("should have its created date remain unchanged") {
+        org.created should be(createdOriginal)
+      }
+
+      it("should have its status set to the Enabled Status") {
+        org.state should be(org.enabled)
+      }
+
+      it("should have its balance remain unchanged") {
+        org.balance should be(balanceOriginal)
       }
     }
 

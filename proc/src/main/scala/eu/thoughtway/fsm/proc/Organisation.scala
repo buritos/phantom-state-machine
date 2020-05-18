@@ -63,4 +63,13 @@ object Organisation {
     credit(org, amount)
     org
   }
+
+  def recover(org: Organisation): Unit =
+    if (org.state.equals(Disabled)) {
+      org.state = Enabled
+    } else {
+      throw new IllegalStateException(
+        s"Can't recover Organisation(${org.id}, ${org.state})"
+      )
+    }
 }
