@@ -5,14 +5,15 @@ import java.time.LocalDateTime
 import eu.thoughtway.fsm.fp.domain.model.Organisation.{
   Defined,
   Disabled,
-  Enabled
+  Enabled,
+  Suspended
 }
-import org.scalatest.{FunSpec, Matchers, ParallelTestExecution}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class OrganisationServiceTest
-    extends FunSpec
-    with Matchers
-    with ParallelTestExecution {
+import scala.language.implicitConversions
+
+class OrganisationServiceTest extends AnyFunSpec with Matchers {
 
   describe("Given an OrganisationService") {
 
@@ -46,6 +47,14 @@ class OrganisationServiceTest
         "debit(defined)(10)" shouldNot typeCheck
       }
 
+      it("should not allow suspend") {
+        "suspend(defined)" shouldNot compile
+      }
+
+      it("should not allow resume") {
+        "resume(defined)" shouldNot compile
+      }
+
       it("should not allow disable") {
         "disable(defined)" shouldNot typeCheck
       }
@@ -71,6 +80,10 @@ class OrganisationServiceTest
 
         it("should not allow approve") {
           "approve(approved)" shouldNot typeCheck
+        }
+
+        it("should not allow resume") {
+          "resume(approved)" shouldNot compile
         }
 
         describe(
@@ -112,6 +125,86 @@ class OrganisationServiceTest
 
           it("should have its balance decremented by the given amount") {
             debited.balance should be(approved.balance - 10)
+          }
+        }
+
+        describe("When an approved Organisation is suspended") {
+          val suspended = suspend(approved)
+
+          it("should have its id remain unchanged") {
+            suspended.id should be(approved.id)
+          }
+
+          it("should have its created date remain unchanged") {
+            suspended.created should be(approved.created)
+          }
+
+          it("should have its status set to Suspended") {
+            suspended.status should be(Suspended)
+          }
+
+          it("should have its balance remain unchanged") {
+            suspended.balance should be(approved.balance)
+          }
+
+          it("should not allow credit") {
+            "val a: String = 1" shouldNot typeCheck
+          }
+
+          it("should not allow debit") {
+            "debit(10)(suspended)" shouldNot typeCheck
+          }
+
+          it("should not allow suspend") {
+            "suspend(suspended)" shouldNot compile
+          }
+
+          it("should not allow resume") {
+            "resume(suspended)" shouldNot compile
+          }
+
+          it("should not allow disable") {
+            "disable(suspended)" shouldNot compile
+          }
+
+          describe("When a suspended Organisation is debited") {
+            val debited = debit(suspended)(10)
+
+            it("should have its id remain unchanged") {
+              debited.id should be(suspended.id)
+            }
+
+            it("should have its created date remain unchanged") {
+              debited.created should be(suspended.created)
+            }
+
+            it("should have its status remain unchanged") {
+              debited.status should be(suspended.status)
+            }
+
+            it("should have its balance decremented by the given amount") {
+              debited.balance should be(suspended.balance - 10)
+            }
+          }
+
+          describe("When a suspended Organisation is resumed") {
+            val resumed = resume(suspended)
+
+            it("should have its id remain unchanged") {
+              resumed.id should be(suspended.id)
+            }
+
+            it("should have its created date remain unchanged") {
+              resumed.created should be(suspended.created)
+            }
+
+            it("should have its status set to Enabled") {
+              resumed.status should be(Enabled)
+            }
+
+            it("should have its balance remain unchanged") {
+              resumed.balance should be(suspended.balance)
+            }
           }
         }
 
